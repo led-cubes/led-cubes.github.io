@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Modular LED Cube</title>
+
+    <script type="module"
+        src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js">
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+
+<model-viewer id="obj"
+    src="cube.glb"
+    camera-controls
+    auto-rotate
+	disable-pan
+	max-camera-orbit="auto auto 0.25m"
+    exposure="0.7"
+    environment-image="neutral"
+    shadow-intensity="1"
+    shadow-softness="0.7">
+</model-viewer>
+
+<script type="module">
+    const mv = document.querySelector("#obj");
+
+    mv.addEventListener("load", () => {
+        mv.cameraOrbit = "45deg 45deg 0.25m";
+        mv.fieldOfView = "25deg";
+		
+        const mats = mv.model.materials || [];
+
+        function withPBR(i, fn) {
+            const m = mats[i];
+            if (!m) return;
+            const p = m.pbrMetallicRoughness;
+            if (!p) return;
+            fn(m, p);
+        }
+
+        withPBR(0, (m, p) => {
+            p.setMetallicFactor(0.0);
+            p.setRoughnessFactor(0.98);
+            p.setBaseColorFactor([0.03, 0.03, 0.03, 1]);
+        });
+
+        withPBR(1, (m, p) => {
+            p.setMetallicFactor(1.0);
+            p.setRoughnessFactor(0.2);
+            p.setBaseColorFactor([0.9, 0.9, 0.9, 1]);
+        });
+
+        withPBR(2, (m, p) => {
+            p.setMetallicFactor(1.0);
+            p.setRoughnessFactor(0.2);
+            p.setBaseColorFactor([0.9, 0.9, 0.9, 1]);
+        });
+
+        withPBR(3, (m, p) => {
+            p.setMetallicFactor(0.0);
+            p.setRoughnessFactor(0.92);
+            p.setBaseColorFactor([0.6, 0.6, 0.6, 1.0]); 
+        });
+
+        withPBR(5, (m, p) => {
+            p.setMetallicFactor(1.0);
+            p.setRoughnessFactor(0.25);
+            p.setBaseColorFactor([0.85, 0.85, 0.85, 1]);
+        });
+
+        withPBR(6, (m, p) => {
+            p.setMetallicFactor(0.0);
+            p.setRoughnessFactor(0.85);
+            p.setBaseColorFactor([0.4, 0.4, 0.4, 0.1]); 
+            m.alphaMode = "BLEND";
+            m.doubleSided = true;
+        });
+
+        withPBR(7, (m, p) => {
+            p.setMetallicFactor(0.0);
+            p.setRoughnessFactor(0.15);
+        });
+		
+        const mat7 = mats[7];
+        const pbr7 = mat7 ? mat7.pbrMetallicRoughness : null;
+        const mat8 = mats[8];
+        const pbr8 = mat8 ? mat8.pbrMetallicRoughness : null;
+        const mat9 = mats[9];
+        const pbr9 = mat9 ? mat9.pbrMetallicRoughness : null;
+        const mat10 = mats[10];
+        const pbr10 = mat10 ? mat10.pbrMetallicRoughness : null;
+        const mat11 = mats[11];
+        const pbr11 = mat11 ? mat11.pbrMetallicRoughness : null;
+
+        let t = 0;
+        function animate() {
+            t += 0.8;
+            if (pbr7) {
+                const hue = Math.floor(t) % 360;
+                const css = `hsl(${hue}, 100%, 50%)`;
+                pbr7.setBaseColorFactor(css);
+            }
+            if (pbr8) {
+                const hue = Math.floor(t + 10) % 360;
+                const css = `hsl(${hue}, 100%, 50%)`;
+                pbr8.setBaseColorFactor(css);
+            }
+            if (pbr9) {
+                const hue = Math.floor(t + 20) % 360;
+                const css = `hsl(${hue}, 100%, 50%)`;
+                pbr9.setBaseColorFactor(css);
+            }
+            if (pbr10) {
+                const hue = Math.floor(t + 30) % 360;
+                const css = `hsl(${hue}, 100%, 50%)`;
+                pbr10.setBaseColorFactor(css);
+            }	
+            if (pbr11) {
+                const hue = Math.floor(t + 40) % 360;
+                const css = `hsl(${hue}, 100%, 50%)`;
+                pbr11.setBaseColorFactor(css);
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    });
+</script>
+
+</body>
+</html>
